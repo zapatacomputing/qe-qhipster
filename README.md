@@ -72,3 +72,4 @@ Since qHiPSTER requires compiled binaries, it cannot be executed locally (unless
 - download and install the `z-quantum-core` resource in said container
 - download and install the `qe-qhipster` resource in said container
 - run `python3 -m pytest` from the `qe-qhipster` resource `src/` directory
+
