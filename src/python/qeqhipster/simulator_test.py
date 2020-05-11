@@ -5,7 +5,7 @@ from zquantum.core.bitstring_distribution import BitstringDistribution
 from openfermion.ops import QubitOperator, IsingOperator
 from .simulator import QHipsterSimulator
 from pyquil import Program
-from pyquil.gates import H, CNOT, RX, CZ
+from pyquil.gates import H, CNOT, RX, CZ, X
 
 class TestQHipster(unittest.TestCase):
 
@@ -50,8 +50,8 @@ class TestQHipster(unittest.TestCase):
         simulator.n_samples = 100
         measurements = simulator.run_circuit_and_measure(circuit)
         # Then
-        self.assertEqual(len(measurements), 100)
-        self.assertEqual(len(measurements[0]), 3)
+        self.assertEqual(len(measurements.bitstrings), 100)
+        self.assertEqual(len(measurements.bitstrings[0]), 3)
 
     def test_get_bitstring_distribution(self):
         for simulator in self.all_simulators:
@@ -64,5 +64,16 @@ class TestQHipster(unittest.TestCase):
             self.assertEqual(bitstring_distribution.get_qubits_number(), 3)
             self.assertGreater(bitstring_distribution.distribution_dict["000"], 1/3)
             self.assertGreater(bitstring_distribution.distribution_dict["111"], 1/3)
+
+    def test_run_circuit_and_measure_correct_bitstring_ordering(self):
+        for simulator in self.all_simulators:
+            # Given
+            circuit = Circuit(Program(X(0), X(1), X(1), X(2), X(2)))
+            # When
+            simulator.n_samples = 1
+            measurements = simulator.run_circuit_and_measure(circuit)
+            # Then
+            self.assertEqual(measurements.bitstrings, [(1,0,0)])
+
 
 
