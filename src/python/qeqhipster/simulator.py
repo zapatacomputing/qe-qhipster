@@ -3,7 +3,7 @@ import subprocess
 
 from zquantum.core.interfaces.backend import QuantumSimulator
 from zquantum.core.circuit import save_circuit
-from zquantum.core.measurement import load_wavefunction, load_expectation_values, sample_from_wavefunction
+from zquantum.core.measurement import load_wavefunction, load_expectation_values, sample_from_wavefunction, Measurements
 from .utils import save_symbolic_operator
 from openfermion.ops import SymbolicOperator
 
@@ -14,7 +14,7 @@ class QHipsterSimulator(QuantumSimulator):
 
     def run_circuit_and_measure(self, circuit, **kwargs):
         wavefunction = self.get_wavefunction(circuit)
-        return sample_from_wavefunction(wavefunction, self.n_samples)
+        return Measurements(sample_from_wavefunction(wavefunction, self.n_samples))
     
     def get_expectation_values(self, circuit, qubit_operator, **kwargs):
         return self.get_exact_expectation_values(circuit, qubit_operator, **kwargs)
