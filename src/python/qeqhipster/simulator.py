@@ -35,7 +35,13 @@ class QHipsterSimulator(QuantumSimulator):
         subprocess.call(['/app/zapata/zapata_interpreter_no_mpi_get_exp_vals.out',
                          './temp_qhipster_circuit.txt', str(self.nthreads), './temp_qhipster_operator.txt',
                          './expectation_values.json'])
-        return load_expectation_values('./expectation_values.json')
+        expectation_values = load_expectation_values('./expectation_values.json')
+        
+        term_index = 0
+        for term in qubit_operator.terms:
+            expectation_values.values[term_index] = np.real(qubit_operator.terms[term]*expectation_values.values[term_index])
+            term_index += 1
+        return expectation_values
 
     def get_wavefunction(self, circuit):
         # First, save the circuit object to file in JSON format
