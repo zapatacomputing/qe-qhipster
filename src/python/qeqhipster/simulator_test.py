@@ -2,6 +2,9 @@ import unittest
 from zquantum.core.interfaces.backend_test import QuantumSimulatorTests
 from .simulator import QHipsterSimulator
 from pyquil.gates import X
+from pyquil import Circuit, Program
+from openfermion import IsingOperator
+import numpy as np
 
 class TestQHipster(unittest.TestCase, QuantumSimulatorTests):
 
