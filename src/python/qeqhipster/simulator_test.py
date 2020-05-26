@@ -5,6 +5,7 @@ from pyquil.gates import X
 from pyquil import Program
 from openfermion import IsingOperator
 from zquantum.core.circuit import Circuit
+from zquantum.core.measurement import ExpectationValues
 import numpy as np
 
 class TestQHipster(unittest.TestCase, QuantumSimulatorTests):
