@@ -6,6 +6,7 @@ from zquantum.core.circuit import save_circuit
 from zquantum.core.measurement import load_wavefunction, load_expectation_values, sample_from_wavefunction, Measurements
 from .utils import save_symbolic_operator
 from openfermion.ops import SymbolicOperator
+import numpy as np
 
 class QHipsterSimulator(QuantumSimulator):
     def __init__(self, n_samples=None, nthreads=1):
