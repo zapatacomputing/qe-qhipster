@@ -18,7 +18,9 @@ class QHipsterSimulator(QuantumSimulator):
     def __init__(self, n_samples=None, nthreads=1):
         self.nthreads = nthreads
         self.n_samples = n_samples
-        subprocess.Popen(["source", "/app/usr/local/bin/compilers_and_libraries.sh"])
+        subprocess.Popen(
+            ["source", "/app/usr/local/bin/compilers_and_libraries.sh"], shell=True
+        )
 
     def run_circuit_and_measure(self, circuit, **kwargs):
         wavefunction = self.get_wavefunction(circuit)
