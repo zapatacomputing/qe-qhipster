@@ -18,9 +18,54 @@ class QHipsterSimulator(QuantumSimulator):
     def __init__(self, n_samples=None, nthreads=1):
         self.nthreads = nthreads
         self.n_samples = n_samples
-        subprocess.Popen(
-            [".", "/app/usr/local/bin/compilers_and_libraries.sh"], shell=True
+
+        # NOTE: The environment variables that are set below are necessary for running qhipster with the intel psxe
+        #   runtime installation. They were obtained through sourcing the script
+        #   /app/usr/local/bin/compilers_and_library.sh which can be found in the zapatacomputing/qe-qhipster docker
+        #   image.
+        os.putenv(
+            "LD_LIBRARY_PATH",
+            "/opt/intel/psxe_runtime_2019.3.199/linux/daal/lib/intel64_lin:/opt/intel/psxe_runtime_2019.3.199/linux/compiler/lib/intel64_lin:/opt/intel/psxe_runtime_2019.3.199/linux/mkl/lib/intel64_lin:/opt/intel/psxe_runtime_2019.3.199/linux/tbb/lib/intel64/gcc4.7:/opt/intel/psxe_runtime_2019.3.199/linux/ipp/lib/intel64:/opt/intel/psxe_runtime_2019.3.199/linux/mpi/intel64/libfabric/lib:/opt/intel/psxe_runtime_2019.3.199/linux/mpi/intel64/lib/release:/opt/intel/psxe_runtime_2019.3.199/linux/mpi/intel64/lib:/opt/intel/psxe_runtime_2019.3.199/linux/compiler/lib/intel64_lin",
         )
+        os.putenv("IPPROOT", "/opt/intel/psxe_runtime_2019.3.199/linux/ipp")
+        os.putenv(
+            "FI_PROVIDER_PATH",
+            "/opt/intel/psxe_runtime_2019.3.199/linux/mpi/intel64/libfabric/lib/prov",
+        )
+        os.putenv(
+            "CLASSPATH",
+            "/opt/intel/psxe_runtime_2019.3.199/linux/daal/lib/daal.jar:/opt/intel/psxe_runtime_2019.3.199/linux/mpi/intel64/lib/mpi.jar",
+        )
+        os.putenv(
+            "CPATH",
+            "/opt/intel/psxe_runtime_2019.3.199/linux/daal/include:/opt/intel/psxe_runtime_2019.3.199/linux/mkl/include:/opt/intel/psxe_runtime_2019.3.199/linux/tbb/include:/opt/intel/psxe_runtime_2019.3.199/linux/ipp/include:",
+        )
+        os.putenv(
+            "NLSPATH",
+            "/opt/intel/psxe_runtime_2019.3.199/linux/mkl/lib/intel64_lin/locale/%l_%t/%N:/opt/intel/psxe_runtime_2019.3.199/linux/compiler/lib/intel64_lin/locale/%l_%t/%N",
+        )
+        os.putenv(
+            "LIBRARY_PATH",
+            "/opt/intel/psxe_runtime_2019.3.199/linux/daal/lib/intel64_lin:/opt/intel/psxe_runtime_2019.3.199/linux/compiler/lib/intel64_lin:/opt/intel/psxe_runtime_2019.3.199/linux/mkl/lib/intel64_lin:/opt/intel/psxe_runtime_2019.3.199/linux/tbb/lib/intel64/gcc4.7:/opt/intel/psxe_runtime_2019.3.199/linux/ipp/lib/intel64:/opt/intel/psxe_runtime_2019.3.199/linux/mpi/intel64/libfabric/lib:/opt/intel/psxe_runtime_2019.3.199/linux/compiler/lib/intel64_lin",
+        )
+        os.putenv("DAALROOT", "/opt/intel/psxe_runtime_2019.3.199/linux/daal")
+        os.putenv(
+            "MIC_LD_LIBRARY_PATH",
+            "/opt/intel/psxe_runtime_2019.3.199/linux/compiler/lib/intel64_lin_mic",
+        )
+        os.putenv("MANPATH", "/opt/intel/psxe_runtime_2019.3.199/linux/mpi/man:")
+        os.putenv("CPLUS_INCLUDE_PATH", "/app/json_parser/include")
+        os.putenv("MKLROOT", "/opt/intel/psxe_runtime_2019.3.199/linux/mkl")
+        os.putenv(
+            "PATH",
+            "/opt/intel/psxe_runtime_2019.3.199/linux/mpi/intel64/libfabric/bin:/opt/intel/psxe_runtime_2019.3.199/linux/mpi/intel64/bin:/opt/intel/psxe_runtime_2019.3.199/linux/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+        )
+        os.putenv("TBBROOT", "/opt/intel/psxe_runtime_2019.3.199/linux/tbb")
+        os.putenv(
+            "PKG_CONFIG_PATH",
+            "/opt/intel/psxe_runtime_2019.3.199/linux/mkl/bin/pkgconfig",
+        )
+        os.putenv("I_MPI_ROOT", "/opt/intel/psxe_runtime_2019.3.199/linux/mpi")
 
     def run_circuit_and_measure(self, circuit, **kwargs):
         wavefunction = self.get_wavefunction(circuit)
