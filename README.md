@@ -27,22 +27,19 @@ and then import in a specific step:
     template: template-1
     arguments:
       parameters:
-      - backend-specs: "{'module_name': 'orquestra.forest.simulator', 'function_name': 'QHipsterSimulator'}"
+      - backend-specs: "{'module_name': 'qeqhipster', 'function_name': 'QHipsterSimulator'}"
       - resources: [qe-qhipster]
 ```
 
 ### Task
 
-In order to use qHiPSTER, a script performing initialization must be executed first. It needs to be done inside the task in the `artifacts` section:
+In order to work with Orquestra `qHipster` requires a custom docker image. Here's an example how to define it in your workflow:
 
-```yaml
-      artifacts:
-      - name: main-script
-        path: /app/main_script.sh
-        raw:
-          data: |
-            source /app/usr/local/bin/compilers_and_libraries.sh
-            python3 python_script.py
+```
+  config:
+    runtime:
+      language: python3
+      customImage: "zapatacomputing/qe-hipster"
 ```
 
 Then to use backend in the python code we can either simply create an object:
