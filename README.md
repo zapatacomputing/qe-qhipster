@@ -27,7 +27,7 @@ and then import in a specific step:
     template: template-1
     arguments:
       parameters:
-      - backend-specs: "{'module_name': 'qeqhipster', 'function_name': 'QHipsterSimulator'}"
+      - backend-specs: "{'module_name': 'qeqhipster.simulator', 'function_name': 'QHipsterSimulator'}"
       - resources: [qe-qhipster]
 ```
 
@@ -45,7 +45,7 @@ In order to work with Orquestra `qHipster` requires a custom docker image. Here'
 Then to use backend in the python code we can either simply create an object:
 
 ```python
-from qe.qhipster import QHipsterSimulator
+from qeqhipster.simulator import QHipsterSimulator
 backend = QHipsterSimulator()
 ```
 
