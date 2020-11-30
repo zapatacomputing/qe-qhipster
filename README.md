@@ -39,7 +39,7 @@ In order to work with Orquestra `qHipster` requires a custom docker image. Here'
   config:
     runtime:
       language: python3
-      customImage: "zapatacomputing/qe-hipster"
+      customImage: "zapatacomputing/qe-qhipster"
 ```
 
 Then to use backend in the python code we can either simply create an object:
