@@ -1,5 +1,8 @@
 import pytest
-from zquantum.core.interfaces.backend_test import QuantumSimulatorTests
+from zquantum.core.interfaces.backend_test import (
+    QuantumSimulatorTests,
+    QuantumSimulatorGatesTest,
+)
 from .simulator import QHipsterSimulator
 
 
@@ -23,4 +26,8 @@ def wf_simulator(request):
 
 
 class TestQHipster(QuantumSimulatorTests):
+    pass
+
+
+class TestQHipsterGates(QuantumSimulatorGatesTest):
     pass
