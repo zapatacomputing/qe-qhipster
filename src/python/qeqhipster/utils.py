@@ -38,3 +38,34 @@ def convert_symbolic_op_to_string(op: SymbolicOperator) -> str:
                 tmp_string += "{}{} ".format(index, action_string)
         string_rep += "{}] +\n".format(tmp_string.strip())
     return string_rep[:-3]
+
+
+def make_circuit_qhipster_compatible(circuit):
+    circuit = replace_identity_gates_with_rx(circuit)
+    circuit = replace_XX_YY_ZZ_gates_with_decomposition(circuit)
+    return circuit
+
+
+def replace_identity_gates_with_rx(circuit):
+    for gate in circuit.gates:
+        if gate.name == "I":
+            gate.name = "Rx"
+            gate.params = [0]
+    return circuit
+
+
+def replace_XX_YY_ZZ_gates_with_decomposition(circuit):
+    for gate in circuit.gates:
+        if gate.name == "XX":
+            raise NotImplementedError(
+                "XX gate is currently not supported for qHipster integration."
+            )
+        elif gate.name == "YY":
+            raise NotImplementedError(
+                "YY gate is currently not supported for qHipster integration."
+            )
+        elif gate.name == "ZZ":
+            raise NotImplementedError(
+                "ZZ gate is currently not supported for qHipster integration."
+            )
+    return circuit
