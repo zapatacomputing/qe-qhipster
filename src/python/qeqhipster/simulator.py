@@ -9,7 +9,7 @@ from zquantum.core.measurement import (
     sample_from_wavefunction,
     Measurements,
 )
-from .utils import save_symbolic_operator
+from .utils import save_symbolic_operator, make_circuit_qhipster_compatible
 from openfermion.ops import SymbolicOperator
 import numpy as np
 
@@ -75,6 +75,7 @@ class QHipsterSimulator(QuantumSimulator):
         return self.get_exact_expectation_values(circuit, qubit_operator, **kwargs)
 
     def get_exact_expectation_values(self, circuit, qubit_operator, **kwargs):
+        circuit = make_circuit_qhipster_compatible(circuit)
         save_circuit(circuit, "./temp_qhipster_circuit.json")
         if isinstance(qubit_operator, SymbolicOperator):
             save_symbolic_operator(qubit_operator, "./temp_qhipster_operator.json")
@@ -116,6 +117,7 @@ class QHipsterSimulator(QuantumSimulator):
 
     def get_wavefunction(self, circuit):
         # First, save the circuit object to file in JSON format
+        circuit = make_circuit_qhipster_compatible(circuit)
         save_circuit(circuit, "./temp_qhipster_circuit.json")
 
         # Parse JSON files for qhipster usage
