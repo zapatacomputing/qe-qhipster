@@ -15,9 +15,11 @@ import numpy as np
 
 
 class QHipsterSimulator(QuantumSimulator):
+    supports_batching = False
+
     def __init__(self, n_samples=None, nthreads=1):
+        super().__init__(n_samples=n_samples)
         self.nthreads = nthreads
-        self.n_samples = n_samples
 
         # NOTE: The environment variables that are set below are necessary for running qhipster with the intel psxe
         #   runtime installation. They were obtained through sourcing the script
@@ -71,10 +73,9 @@ class QHipsterSimulator(QuantumSimulator):
         wavefunction = self.get_wavefunction(circuit)
         return Measurements(sample_from_wavefunction(wavefunction, self.n_samples))
 
-    def get_expectation_values(self, circuit, qubit_operator, **kwargs):
-        return self.get_exact_expectation_values(circuit, qubit_operator, **kwargs)
-
     def get_exact_expectation_values(self, circuit, qubit_operator, **kwargs):
+        self.number_of_circuits_run += 1
+        self.number_of_jobs_run += 1
         circuit = make_circuit_qhipster_compatible(circuit)
         save_circuit(circuit, "./temp_qhipster_circuit.json")
         if isinstance(qubit_operator, SymbolicOperator):
@@ -116,6 +117,7 @@ class QHipsterSimulator(QuantumSimulator):
         return expectation_values
 
     def get_wavefunction(self, circuit):
+        super().get_wavefunction(circuit)
         # First, save the circuit object to file in JSON format
         circuit = make_circuit_qhipster_compatible(circuit)
         save_circuit(circuit, "./temp_qhipster_circuit.json")
