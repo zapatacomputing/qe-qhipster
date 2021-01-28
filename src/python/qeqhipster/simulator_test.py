@@ -30,5 +30,5 @@ class TestQHipster(QuantumSimulatorTests):
 
 
 class TestQHipsterGates(QuantumSimulatorGatesTest):
-    gates_to_exclude = ["XX", "YY", "ZZ"]
+    gates_to_exclude = ["XX", "YY", "ZZ", "XY", "ISWAP"]
     pass

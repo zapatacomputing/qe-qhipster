@@ -42,6 +42,7 @@ def convert_symbolic_op_to_string(op: SymbolicOperator) -> str:
 
 def make_circuit_qhipster_compatible(circuit):
     circuit = replace_identity_gates_with_rx(circuit)
+    circuit = replace_iswap_gates_with_decomposition(circuit)
     circuit = replace_pauli_rotation_gates_with_decomposition(circuit)
     return circuit
 
@@ -51,6 +52,15 @@ def replace_identity_gates_with_rx(circuit):
         if gate.name == "I":
             gate.name = "Rx"
             gate.params = [0]
+    return circuit
+
+
+def replace_iswap_gates_with_decomposition(circuit):
+    for gate in circuit.gates:
+        if gate.name == "ISWAP":
+            raise NotImplementedError(
+                "ISWAP gate is currently not supported for qHipster integration."
+            )
     return circuit
 
 
