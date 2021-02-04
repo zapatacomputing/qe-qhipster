@@ -69,9 +69,11 @@ class QHipsterSimulator(QuantumSimulator):
         )
         os.putenv("I_MPI_ROOT", "/opt/intel/psxe_runtime_2019.3.199/linux/mpi")
 
-    def run_circuit_and_measure(self, circuit, **kwargs):
+    def run_circuit_and_measure(self, circuit, n_samples=None, **kwargs):
+        if n_samples is None:
+            n_samples = self.n_samples
         wavefunction = self.get_wavefunction(circuit)
-        return Measurements(sample_from_wavefunction(wavefunction, self.n_samples))
+        return Measurements(sample_from_wavefunction(wavefunction, n_samples))
 
     def get_exact_expectation_values(self, circuit, qubit_operator, **kwargs):
         self.number_of_circuits_run += 1
