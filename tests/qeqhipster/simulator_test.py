@@ -3,7 +3,7 @@ from zquantum.core.interfaces.backend_test import (
     QuantumSimulatorTests,
     QuantumSimulatorGatesTest,
 )
-from .simulator import QHipsterSimulator
+from qeqhipster.simulator import QHipsterSimulator
 
 
 @pytest.fixture(
