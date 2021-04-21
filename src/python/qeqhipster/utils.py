@@ -1,6 +1,7 @@
 from openfermion import SymbolicOperator
 import numpy as np
 import json
+from zquantum.core.wip import circuits
 
 
 def save_symbolic_operator(op: SymbolicOperator, filename: str) -> None:
@@ -40,46 +41,22 @@ def convert_symbolic_op_to_string(op: SymbolicOperator) -> str:
     return string_rep[:-3]
 
 
-def make_circuit_qhipster_compatible(circuit):
-    circuit = replace_identity_gates_with_rx(circuit)
-    circuit = replace_iswap_gates_with_decomposition(circuit)
-    circuit = replace_two_qubit_pauli_rotation_gates_with_decomposition(circuit)
-    return circuit
+QHIPSTER_UNSUPPORTED_GATES = {"ISWAP", "XX", "YY", "ZZ", "XY"}
 
 
-def replace_identity_gates_with_rx(circuit):
-    for gate in circuit.gates:
-        if gate.name == "I":
-            gate.name = "Rx"
-            gate.params = [0]
-    return circuit
-
-
-def replace_iswap_gates_with_decomposition(circuit):
-    for gate in circuit.gates:
-        if gate.name == "ISWAP":
-            raise NotImplementedError(
-                "ISWAP gate is currently not supported for qHipster integration."
-            )
-    return circuit
-
-
-def replace_two_qubit_pauli_rotation_gates_with_decomposition(circuit):
-    for gate in circuit.gates:
-        if gate.name == "XX":
-            raise NotImplementedError(
-                "XX gate is currently not supported for qHipster integration."
-            )
-        elif gate.name == "YY":
-            raise NotImplementedError(
-                "YY gate is currently not supported for qHipster integration."
-            )
-        elif gate.name == "ZZ":
-            raise NotImplementedError(
-                "ZZ gate is currently not supported for qHipster integration."
-            )
-        elif gate.name == "XY":
-            raise NotImplementedError(
-                "XY gate is currently not supported for qHipster integration."
-            )
-    return circuit
+def make_circuit_qhipster_compatible(circuit: circuits.Circuit):
+    unsupported_operations = [
+        op for op in circuit.operations if op.gate.name in QHIPSTER_UNSUPPORTED_GATES
+    ]
+    if unsupported_operations:
+        raise NotImplementedError(
+            "ISWAP gates and two-qubit Pauli rotations are not supported by qHipster "
+            f"integration. Offending operations: {unsupported_operations}."
+        )
+    return circuits.Circuit(
+        operations=[
+            circuits.RX(0)(*op.qubit_indices) if op.gate.name == "I" else op
+            for op in circuit.operations
+        ],
+        n_qubits=circuit.n_qubits,
+    )
