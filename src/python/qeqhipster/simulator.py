@@ -121,14 +121,13 @@ class QHipsterSimulator(QuantumSimulator):
                 dir_path, "expectation_values.json"
             )
 
-            if isinstance(qubit_operator, SymbolicOperator):
-                save_symbolic_operator(qubit_operator, operator_json_path)
-            else:
-                raise Exception(
-                    "Unsupported type: "
-                    + type(qubit_operator)
-                    + "QHipster works only with openfermion.SymbolicOperator"
+            if not isinstance(qubit_operator, SymbolicOperator):
+                raise TypeError(
+                    f"Unsupported type: {type(qubit_operator)} QHipster works only with "
+                    "openfermion.SymbolicOperator"
                 )
+
+            save_symbolic_operator(qubit_operator, operator_json_path)
 
             with open(circuit_txt_path, "w") as qasm_file:
                 qasm_file.write(convert_to_simplified_qasm(circuit))
