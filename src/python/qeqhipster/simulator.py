@@ -17,6 +17,70 @@ from openfermion.ops import SymbolicOperator
 import numpy as np
 
 
+# NOTE: The environment variables below are necessary for running qhipster with the intel
+# psxe runtime installation. They were obtained through sourcing the script
+# /app/usr/local/bin/compilers_and_library.sh which can be found in the
+# zapatacomputing/qe-qhipster docker image.
+
+PSXE_ENVS = {
+    "LD_LIBRARY_PATH": (
+        "/opt/intel/psxe_runtime_2019.3.199/linux/daal/lib/intel64_lin:"
+        "/opt/intel/psxe_runtime_2019.3.199/linux/compiler/lib/intel64_lin:"
+        "/opt/intel/psxe_runtime_2019.3.199/linux/mkl/lib/intel64_lin:"
+        "/opt/intel/psxe_runtime_2019.3.199/linux/tbb/lib/intel64/gcc4.7:"
+        "/opt/intel/psxe_runtime_2019.3.199/linux/ipp/lib/intel64:"
+        "/opt/intel/psxe_runtime_2019.3.199/linux/mpi/intel64/libfabric/lib:"
+        "/opt/intel/psxe_runtime_2019.3.199/linux/mpi/intel64/lib/release:"
+        "/opt/intel/psxe_runtime_2019.3.199/linux/mpi/intel64/lib:"
+        "/opt/intel/psxe_runtime_2019.3.199/linux/compiler/lib/intel64_lin"
+    ),
+    "IPPROOT": "/opt/intel/psxe_runtime_2019.3.199/linux/ipp",
+    "FI_PROVIDER_PATH": "/opt/intel/psxe_runtime_2019.3.199/linux/mpi/intel64/libfabric/lib/prov",
+    "CLASSPATH": (
+        "/opt/intel/psxe_runtime_2019.3.199/linux/daal/lib/daal.jar:"
+        "/opt/intel/psxe_runtime_2019.3.199/linux/mpi/intel64/lib/mpi.jar"
+    ),
+    "CPATH": (
+        "/opt/intel/psxe_runtime_2019.3.199/linux/daal/include:"
+        "/opt/intel/psxe_runtime_2019.3.199/linux/mkl/include:"
+        "/opt/intel/psxe_runtime_2019.3.199/linux/tbb/include:"
+        "/opt/intel/psxe_runtime_2019.3.199/linux/ipp/include:"
+    ),
+    "NLSPATH": (
+        "/opt/intel/psxe_runtime_2019.3.199/linux/mkl/lib/intel64_lin/locale/%l_%t/%N:"
+        "/opt/intel/psxe_runtime_2019.3.199/linux/compiler/lib/intel64_lin/locale/%l_%t/%N"
+    ),
+    "LIBRARY_PATH": (
+        "/opt/intel/psxe_runtime_2019.3.199/linux/daal/lib/intel64_lin:"
+        "/opt/intel/psxe_runtime_2019.3.199/linux/compiler/lib/intel64_lin:"
+        "/opt/intel/psxe_runtime_2019.3.199/linux/mkl/lib/intel64_lin:"
+        "/opt/intel/psxe_runtime_2019.3.199/linux/tbb/lib/intel64/gcc4.7:"
+        "/opt/intel/psxe_runtime_2019.3.199/linux/ipp/lib/intel64:"
+        "/opt/intel/psxe_runtime_2019.3.199/linux/mpi/intel64/libfabric/lib:"
+        "/opt/intel/psxe_runtime_2019.3.199/linux/compiler/lib/intel64_lin"
+    ),
+    "DAALROOT": "/opt/intel/psxe_runtime_2019.3.199/linux/daal",
+    "MIC_LD_LIBRARY_PATH": "/opt/intel/psxe_runtime_2019.3.199/linux/compiler/lib/intel64_lin_mic",
+    "MANPATH": "/opt/intel/psxe_runtime_2019.3.199/linux/mpi/man:",
+    "CPLUS_INCLUDE_PATH": "/app/json_parser/include",
+    "MKLROOT": "/opt/intel/psxe_runtime_2019.3.199/linux/mkl",
+    "PATH": (
+        "/opt/intel/psxe_runtime_2019.3.199/linux/mpi/intel64/libfabric/bin:"
+        "/opt/intel/psxe_runtime_2019.3.199/linux/mpi/intel64/bin:"
+        "/opt/intel/psxe_runtime_2019.3.199/linux/bin:"
+        "/usr/local/sbin:"
+        "/usr/local/bin:"
+        "/usr/sbin:"
+        "/usr/bin:"
+        "/sbin:"
+        "/bin"
+    ),
+    "TBBROOT": "/opt/intel/psxe_runtime_2019.3.199/linux/tbb",
+    "PKG_CONFIG_PATH": "/opt/intel/psxe_runtime_2019.3.199/linux/mkl/bin/pkgconfig",
+    "I_MPI_ROOT": "/opt/intel/psxe_runtime_2019.3.199/linux/mpi",
+}
+
+
 class QHipsterSimulator(QuantumSimulator):
     supports_batching = False
 
@@ -24,53 +88,8 @@ class QHipsterSimulator(QuantumSimulator):
         super().__init__(n_samples=n_samples)
         self.nthreads = nthreads
 
-        # NOTE: The environment variables that are set below are necessary for running qhipster with the intel psxe
-        #   runtime installation. They were obtained through sourcing the script
-        #   /app/usr/local/bin/compilers_and_library.sh which can be found in the zapatacomputing/qe-qhipster docker
-        #   image.
-        os.putenv(
-            "LD_LIBRARY_PATH",
-            "/opt/intel/psxe_runtime_2019.3.199/linux/daal/lib/intel64_lin:/opt/intel/psxe_runtime_2019.3.199/linux/compiler/lib/intel64_lin:/opt/intel/psxe_runtime_2019.3.199/linux/mkl/lib/intel64_lin:/opt/intel/psxe_runtime_2019.3.199/linux/tbb/lib/intel64/gcc4.7:/opt/intel/psxe_runtime_2019.3.199/linux/ipp/lib/intel64:/opt/intel/psxe_runtime_2019.3.199/linux/mpi/intel64/libfabric/lib:/opt/intel/psxe_runtime_2019.3.199/linux/mpi/intel64/lib/release:/opt/intel/psxe_runtime_2019.3.199/linux/mpi/intel64/lib:/opt/intel/psxe_runtime_2019.3.199/linux/compiler/lib/intel64_lin",
-        )
-        os.putenv("IPPROOT", "/opt/intel/psxe_runtime_2019.3.199/linux/ipp")
-        os.putenv(
-            "FI_PROVIDER_PATH",
-            "/opt/intel/psxe_runtime_2019.3.199/linux/mpi/intel64/libfabric/lib/prov",
-        )
-        os.putenv(
-            "CLASSPATH",
-            "/opt/intel/psxe_runtime_2019.3.199/linux/daal/lib/daal.jar:/opt/intel/psxe_runtime_2019.3.199/linux/mpi/intel64/lib/mpi.jar",
-        )
-        os.putenv(
-            "CPATH",
-            "/opt/intel/psxe_runtime_2019.3.199/linux/daal/include:/opt/intel/psxe_runtime_2019.3.199/linux/mkl/include:/opt/intel/psxe_runtime_2019.3.199/linux/tbb/include:/opt/intel/psxe_runtime_2019.3.199/linux/ipp/include:",
-        )
-        os.putenv(
-            "NLSPATH",
-            "/opt/intel/psxe_runtime_2019.3.199/linux/mkl/lib/intel64_lin/locale/%l_%t/%N:/opt/intel/psxe_runtime_2019.3.199/linux/compiler/lib/intel64_lin/locale/%l_%t/%N",
-        )
-        os.putenv(
-            "LIBRARY_PATH",
-            "/opt/intel/psxe_runtime_2019.3.199/linux/daal/lib/intel64_lin:/opt/intel/psxe_runtime_2019.3.199/linux/compiler/lib/intel64_lin:/opt/intel/psxe_runtime_2019.3.199/linux/mkl/lib/intel64_lin:/opt/intel/psxe_runtime_2019.3.199/linux/tbb/lib/intel64/gcc4.7:/opt/intel/psxe_runtime_2019.3.199/linux/ipp/lib/intel64:/opt/intel/psxe_runtime_2019.3.199/linux/mpi/intel64/libfabric/lib:/opt/intel/psxe_runtime_2019.3.199/linux/compiler/lib/intel64_lin",
-        )
-        os.putenv("DAALROOT", "/opt/intel/psxe_runtime_2019.3.199/linux/daal")
-        os.putenv(
-            "MIC_LD_LIBRARY_PATH",
-            "/opt/intel/psxe_runtime_2019.3.199/linux/compiler/lib/intel64_lin_mic",
-        )
-        os.putenv("MANPATH", "/opt/intel/psxe_runtime_2019.3.199/linux/mpi/man:")
-        os.putenv("CPLUS_INCLUDE_PATH", "/app/json_parser/include")
-        os.putenv("MKLROOT", "/opt/intel/psxe_runtime_2019.3.199/linux/mkl")
-        os.putenv(
-            "PATH",
-            "/opt/intel/psxe_runtime_2019.3.199/linux/mpi/intel64/libfabric/bin:/opt/intel/psxe_runtime_2019.3.199/linux/mpi/intel64/bin:/opt/intel/psxe_runtime_2019.3.199/linux/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
-        )
-        os.putenv("TBBROOT", "/opt/intel/psxe_runtime_2019.3.199/linux/tbb")
-        os.putenv(
-            "PKG_CONFIG_PATH",
-            "/opt/intel/psxe_runtime_2019.3.199/linux/mkl/bin/pkgconfig",
-        )
-        os.putenv("I_MPI_ROOT", "/opt/intel/psxe_runtime_2019.3.199/linux/mpi")
+        for key, value in PSXE_ENVS.items():
+            os.putenv(key, value)
 
     @compatible_with_old_type(
         old_type=OldCircuit, translate_old_to_wip=new_circuit_from_old_circuit
