@@ -9,7 +9,10 @@ from zquantum.core.measurement import (
     sample_from_wavefunction,
     Measurements,
 )
-from .utils import save_symbolic_operator, make_circuit_qhipster_compatible
+from zquantum.core.circuit import Circuit as OldCircuit
+from zquantum.core.wip.compatibility_tools import compatible_with_old_type
+from zquantum.core.wip.circuits import new_circuit_from_old_circuit
+from .utils import save_symbolic_operator, make_circuit_qhipster_compatible, convert_to_simplified_qasm
 from openfermion.ops import SymbolicOperator
 import numpy as np
 
@@ -69,17 +72,23 @@ class QHipsterSimulator(QuantumSimulator):
         )
         os.putenv("I_MPI_ROOT", "/opt/intel/psxe_runtime_2019.3.199/linux/mpi")
 
+    @compatible_with_old_type(
+        old_type=OldCircuit, translate_old_to_wip=new_circuit_from_old_circuit
+    )
     def run_circuit_and_measure(self, circuit, n_samples=None, **kwargs):
         if n_samples is None:
             n_samples = self.n_samples
         wavefunction = self.get_wavefunction(circuit)
         return Measurements(sample_from_wavefunction(wavefunction, n_samples))
 
+    @compatible_with_old_type(
+        old_type=OldCircuit, translate_old_to_wip=new_circuit_from_old_circuit
+    )
     def get_exact_expectation_values(self, circuit, qubit_operator, **kwargs):
         self.number_of_circuits_run += 1
         self.number_of_jobs_run += 1
         circuit = make_circuit_qhipster_compatible(circuit)
-        save_circuit(circuit, "./temp_qhipster_circuit.json")
+
         if isinstance(qubit_operator, SymbolicOperator):
             save_symbolic_operator(qubit_operator, "./temp_qhipster_operator.json")
         else:
@@ -89,10 +98,9 @@ class QHipsterSimulator(QuantumSimulator):
                 + "QHipster works only with openfermion.SymbolicOperator"
             )
 
-        # Parse JSON files for qhipster usage
-        subprocess.call(
-            ["/app/json_parser/json_to_qasm.o", "./temp_qhipster_circuit.json"]
-        )
+        with open("./temp_qhipster_circuit.txt", "w") as qasm_file:
+            qasm_file.write(convert_to_simplified_qasm(circuit))
+
         subprocess.call(
             [
                 "/app/json_parser/qubitop_to_paulistrings.o",
@@ -118,16 +126,17 @@ class QHipsterSimulator(QuantumSimulator):
             term_index += 1
         return expectation_values
 
+    @compatible_with_old_type(
+        old_type=OldCircuit, translate_old_to_wip=new_circuit_from_old_circuit
+    )
     def get_wavefunction(self, circuit):
         super().get_wavefunction(circuit)
         # First, save the circuit object to file in JSON format
         circuit = make_circuit_qhipster_compatible(circuit)
-        save_circuit(circuit, "./temp_qhipster_circuit.json")
 
-        # Parse JSON files for qhipster usage
-        subprocess.call(
-            ["/app/json_parser/json_to_qasm.o", "./temp_qhipster_circuit.json"]
-        )
+        with open("./temp_qhipster_circuit.txt", "w") as qasm_file:
+            qasm_file.write(convert_to_simplified_qasm(circuit))
+
         # Run simulation
         subprocess.call(
             [
@@ -139,6 +148,5 @@ class QHipsterSimulator(QuantumSimulator):
         )
 
         wavefunction = load_wavefunction("./temp_qhipster_wavefunction.json")
-        os.remove("./temp_qhipster_circuit.json")
         os.remove("./temp_qhipster_wavefunction.json")
         return wavefunction
