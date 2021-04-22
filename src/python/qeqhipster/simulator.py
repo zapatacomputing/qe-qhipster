@@ -96,9 +96,6 @@ class QHipsterSimulator(QuantumSimulator):
         super().__init__(n_samples=n_samples)
         self.nthreads = nthreads
 
-        for key, value in PSXE_ENVS.items():
-            os.putenv(key, value)
-
     @compatible_with_old_type(
         old_type=OldCircuit, translate_old_to_wip=new_circuit_from_old_circuit
     )
@@ -150,7 +147,8 @@ class QHipsterSimulator(QuantumSimulator):
                     str(self.nthreads),
                     operator_txt_path,
                     expectation_values_json_path,
-                ]
+                ],
+                env=PSXE_ENVS,
             )
             expectation_values = load_expectation_values(expectation_values_json_path)
 
@@ -186,7 +184,8 @@ class QHipsterSimulator(QuantumSimulator):
                     circuit_txt_path,
                     str(self.nthreads),
                     wavefunction_json_path,
-                ]
+                ],
+                env=PSXE_ENVS,
             )
 
             wavefunction = load_wavefunction(wavefunction_json_path)
