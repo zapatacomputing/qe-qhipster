@@ -23,7 +23,7 @@ import numpy as np
 
 # NOTE: The environment variables below are necessary for running qhipster with the intel
 # psxe runtime installation. They were obtained through sourcing the script
-# /app/usr/local/bin/compilers_and_library.sh which can be found in the
+# /app/usr/local/bin/compilers_and_libraries.sh which can be found in the
 # zapatacomputing/qe-qhipster docker image.
 
 
