@@ -167,22 +167,28 @@ class QHipsterSimulator(QuantumSimulator):
     )
     def get_wavefunction(self, circuit):
         super().get_wavefunction(circuit)
-        # First, save the circuit object to file in JSON format
-        circuit = make_circuit_qhipster_compatible(circuit)
 
-        with open("./temp_qhipster_circuit.txt", "w") as qasm_file:
-            qasm_file.write(convert_to_simplified_qasm(circuit))
+        with tempfile.TemporaryDirectory() as dir_path:
+            circuit_txt_path = os.path.join(dir_path, "temp_qhipster_circuit.txt")
+            wavefunction_json_path = os.path.join(
+                dir_path, "temp_qhipster_wavefunction.json"
+            )
 
-        # Run simulation
-        subprocess.call(
-            [
-                "/app/zapata/zapata_interpreter_no_mpi_get_wf.out",
-                "./temp_qhipster_circuit.txt",
-                str(self.nthreads),
-                "./temp_qhipster_wavefunction.json",
-            ]
-        )
+            circuit = make_circuit_qhipster_compatible(circuit)
 
-        wavefunction = load_wavefunction("./temp_qhipster_wavefunction.json")
-        os.remove("./temp_qhipster_wavefunction.json")
+            with open(circuit_txt_path, "w") as qasm_file:
+                qasm_file.write(convert_to_simplified_qasm(circuit))
+
+            # Run simulation
+            subprocess.call(
+                [
+                    "/app/zapata/zapata_interpreter_no_mpi_get_wf.out",
+                    circuit_txt_path,
+                    str(self.nthreads),
+                    wavefunction_json_path,
+                ]
+            )
+
+            wavefunction = load_wavefunction(wavefunction_json_path)
+
         return wavefunction
