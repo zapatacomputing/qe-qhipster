@@ -3,7 +3,6 @@ import subprocess
 import tempfile
 
 from zquantum.core.interfaces.backend import QuantumSimulator
-from zquantum.core.circuit import save_circuit
 from zquantum.core.measurement import (
     load_wavefunction,
     load_expectation_values,
@@ -13,7 +12,11 @@ from zquantum.core.measurement import (
 from zquantum.core.circuit import Circuit as OldCircuit
 from zquantum.core.wip.compatibility_tools import compatible_with_old_type
 from zquantum.core.wip.circuits import new_circuit_from_old_circuit
-from .utils import save_symbolic_operator, make_circuit_qhipster_compatible, convert_to_simplified_qasm
+from .utils import (
+    save_symbolic_operator,
+    make_circuit_qhipster_compatible,
+    convert_to_simplified_qasm,
+)
 from openfermion.ops import SymbolicOperator
 import numpy as np
 
@@ -113,12 +116,13 @@ class QHipsterSimulator(QuantumSimulator):
         self.number_of_jobs_run += 1
         circuit = make_circuit_qhipster_compatible(circuit)
 
-
         with tempfile.TemporaryDirectory() as dir_path:
             operator_json_path = os.path.join(dir_path, "temp_qhipster_operator.json")
             operator_txt_path = os.path.join(dir_path, "temp_qhipster_operator.txt")
             circuit_txt_path = os.path.join(dir_path, "temp_qhipster_circuit.txt")
-            expectation_values_json_path = os.path.join(dir_path, "expectation_values.json")
+            expectation_values_json_path = os.path.join(
+                dir_path, "expectation_values.json"
+            )
 
             if isinstance(qubit_operator, SymbolicOperator):
                 save_symbolic_operator(qubit_operator, operator_json_path)
