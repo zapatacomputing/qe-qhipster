@@ -60,3 +60,26 @@ def make_circuit_qhipster_compatible(circuit: circuits.Circuit):
         ],
         n_qubits=circuit.n_qubits,
     )
+
+
+def _serialize_operation_to_qasm(operation: circuits.GateOperation):
+    operation_param_string = " ".join(
+        [
+            *(f"{param:.20f}" for param in operation.params),
+            *map(str, operation.qubit_indices),
+        ]
+    )
+    return f"{operation.gate.name} {operation_param_string}"
+
+
+def convert_to_simplified_qasm(circuit: circuits.Circuit):
+    return (
+        "\n".join(
+            [
+                f"{max(index for op in circuit.operations for index in op.qubit_indices)+1}",
+                *map(_serialize_operation_to_qasm, circuit.operations),
+            ]
+        )
+        if circuit.operations
+        else "0\n"
+    )

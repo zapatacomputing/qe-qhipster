@@ -2,7 +2,10 @@ import numpy as np
 import sympy
 import pytest
 from zquantum.core.wip import circuits
-from qeqhipster.utils import make_circuit_qhipster_compatible
+from qeqhipster.utils import (
+    make_circuit_qhipster_compatible,
+    convert_to_simplified_qasm,
+)
 
 
 class TestMakingCircuitCompatibleWithQHipster:
@@ -71,3 +74,38 @@ class TestMakingCircuitCompatibleWithQHipster:
 
         with pytest.raises(NotImplementedError):
             make_circuit_qhipster_compatible(circuit)
+
+
+class TestConvertingCircuitToSimplifiedQasm:
+    @pytest.mark.parametrize(
+        "circuit, expected_qasm",
+        [
+            (circuits.Circuit(), "0\n"),
+            (
+                circuits.Circuit([circuits.X(0), circuits.Y(2), circuits.Z(1)]),
+                "\n".join(["3", "X 0", "Y 2", "Z 1"]),
+            ),
+            (
+                circuits.Circuit([circuits.X(0), circuits.Z(4)]),
+                "\n".join(["5", "X 0", "Z 4"]),
+            ),
+            (
+                circuits.Circuit([circuits.X(4), circuits.Z(0)]),
+                "\n".join(["5", "X 4", "Z 0"]),
+            ),
+            (
+                circuits.Circuit([circuits.X(4), circuits.CNOT(0, 3)]),
+                "\n".join(["5", "X 4", "CNOT 0 3"]),
+            ),
+            (
+                circuits.Circuit([circuits.RX(np.pi)(1), circuits.RZ(0.5)(3)]),
+                "\n".join(
+                    ["4", "RX 3.14159265358979311600 1", "RZ 0.50000000000000000000 3"]
+                ),
+            ),
+        ],
+    )
+    def test_converting_circuit_to_qasm_emits_correct_string(
+        self, circuit, expected_qasm
+    ):
+        assert convert_to_simplified_qasm(circuit) == expected_qasm
