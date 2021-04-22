@@ -1,5 +1,6 @@
 import os
 import subprocess
+import tempfile
 
 from zquantum.core.interfaces.backend import QuantumSimulator
 from zquantum.core.circuit import save_circuit
@@ -112,35 +113,43 @@ class QHipsterSimulator(QuantumSimulator):
         self.number_of_jobs_run += 1
         circuit = make_circuit_qhipster_compatible(circuit)
 
-        if isinstance(qubit_operator, SymbolicOperator):
-            save_symbolic_operator(qubit_operator, "./temp_qhipster_operator.json")
-        else:
-            raise Exception(
-                "Unsupported type: "
-                + type(qubit_operator)
-                + "QHipster works only with openfermion.SymbolicOperator"
+
+        with tempfile.TemporaryDirectory() as dir_path:
+            operator_json_path = os.path.join(dir_path, "temp_qhipster_operator.json")
+            operator_txt_path = os.path.join(dir_path, "temp_qhipster_operator.txt")
+            circuit_txt_path = os.path.join(dir_path, "temp_qhipster_circuit.txt")
+            expectation_values_json_path = os.path.join(dir_path, "expectation_values.json")
+
+            if isinstance(qubit_operator, SymbolicOperator):
+                save_symbolic_operator(qubit_operator, operator_json_path)
+            else:
+                raise Exception(
+                    "Unsupported type: "
+                    + type(qubit_operator)
+                    + "QHipster works only with openfermion.SymbolicOperator"
+                )
+
+            with open(circuit_txt_path, "w") as qasm_file:
+                qasm_file.write(convert_to_simplified_qasm(circuit))
+
+            subprocess.call(
+                [
+                    "/app/json_parser/qubitop_to_paulistrings.o",
+                    operator_json_path,
+                ]
             )
+            # Run simulation
+            subprocess.call(
+                [
+                    "/app/zapata/zapata_interpreter_no_mpi_get_exp_vals.out",
+                    circuit_txt_path,
+                    str(self.nthreads),
+                    operator_txt_path,
+                    expectation_values_json_path,
+                ]
+            )
+            expectation_values = load_expectation_values(expectation_values_json_path)
 
-        with open("./temp_qhipster_circuit.txt", "w") as qasm_file:
-            qasm_file.write(convert_to_simplified_qasm(circuit))
-
-        subprocess.call(
-            [
-                "/app/json_parser/qubitop_to_paulistrings.o",
-                "./temp_qhipster_operator.json",
-            ]
-        )
-        # Run simulation
-        subprocess.call(
-            [
-                "/app/zapata/zapata_interpreter_no_mpi_get_exp_vals.out",
-                "./temp_qhipster_circuit.txt",
-                str(self.nthreads),
-                "./temp_qhipster_operator.txt",
-                "./expectation_values.json",
-            ]
-        )
-        expectation_values = load_expectation_values("./expectation_values.json")
         term_index = 0
         for term in qubit_operator.terms:
             expectation_values.values[term_index] = np.real(
