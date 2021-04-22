@@ -22,52 +22,56 @@ import numpy as np
 # /app/usr/local/bin/compilers_and_library.sh which can be found in the
 # zapatacomputing/qe-qhipster docker image.
 
+
+PSXE_BASE_PATH = "/opt/intel/psxe_runtime_2019.3.199/linux"
+
+
 PSXE_ENVS = {
     "LD_LIBRARY_PATH": (
-        "/opt/intel/psxe_runtime_2019.3.199/linux/daal/lib/intel64_lin:"
-        "/opt/intel/psxe_runtime_2019.3.199/linux/compiler/lib/intel64_lin:"
-        "/opt/intel/psxe_runtime_2019.3.199/linux/mkl/lib/intel64_lin:"
-        "/opt/intel/psxe_runtime_2019.3.199/linux/tbb/lib/intel64/gcc4.7:"
-        "/opt/intel/psxe_runtime_2019.3.199/linux/ipp/lib/intel64:"
-        "/opt/intel/psxe_runtime_2019.3.199/linux/mpi/intel64/libfabric/lib:"
-        "/opt/intel/psxe_runtime_2019.3.199/linux/mpi/intel64/lib/release:"
-        "/opt/intel/psxe_runtime_2019.3.199/linux/mpi/intel64/lib:"
-        "/opt/intel/psxe_runtime_2019.3.199/linux/compiler/lib/intel64_lin"
+        f"{PSXE_BASE_PATH}/daal/lib/intel64_lin:"
+        f"{PSXE_BASE_PATH}/compiler/lib/intel64_lin:"
+        f"{PSXE_BASE_PATH}/mkl/lib/intel64_lin:"
+        f"{PSXE_BASE_PATH}/tbb/lib/intel64/gcc4.7:"
+        f"{PSXE_BASE_PATH}/ipp/lib/intel64:"
+        f"{PSXE_BASE_PATH}/mpi/intel64/libfabric/lib:"
+        f"{PSXE_BASE_PATH}/mpi/intel64/lib/release:"
+        f"{PSXE_BASE_PATH}/mpi/intel64/lib:"
+        f"{PSXE_BASE_PATH}/compiler/lib/intel64_lin"
     ),
-    "IPPROOT": "/opt/intel/psxe_runtime_2019.3.199/linux/ipp",
-    "FI_PROVIDER_PATH": "/opt/intel/psxe_runtime_2019.3.199/linux/mpi/intel64/libfabric/lib/prov",
+    "IPPROOT": f"{PSXE_BASE_PATH}/ipp",
+    "FI_PROVIDER_PATH": f"{PSXE_BASE_PATH}/mpi/intel64/libfabric/lib/prov",
     "CLASSPATH": (
-        "/opt/intel/psxe_runtime_2019.3.199/linux/daal/lib/daal.jar:"
-        "/opt/intel/psxe_runtime_2019.3.199/linux/mpi/intel64/lib/mpi.jar"
+        f"{PSXE_BASE_PATH}/daal/lib/daal.jar:"
+        f"{PSXE_BASE_PATH}/mpi/intel64/lib/mpi.jar"
     ),
     "CPATH": (
-        "/opt/intel/psxe_runtime_2019.3.199/linux/daal/include:"
-        "/opt/intel/psxe_runtime_2019.3.199/linux/mkl/include:"
-        "/opt/intel/psxe_runtime_2019.3.199/linux/tbb/include:"
-        "/opt/intel/psxe_runtime_2019.3.199/linux/ipp/include:"
+        f"{PSXE_BASE_PATH}/daal/include:"
+        f"{PSXE_BASE_PATH}/mkl/include:"
+        f"{PSXE_BASE_PATH}/tbb/include:"
+        f"{PSXE_BASE_PATH}/ipp/include:"
     ),
     "NLSPATH": (
-        "/opt/intel/psxe_runtime_2019.3.199/linux/mkl/lib/intel64_lin/locale/%l_%t/%N:"
-        "/opt/intel/psxe_runtime_2019.3.199/linux/compiler/lib/intel64_lin/locale/%l_%t/%N"
+        f"{PSXE_BASE_PATH}/mkl/lib/intel64_lin/locale/%l_%t/%N:"
+        f"{PSXE_BASE_PATH}/compiler/lib/intel64_lin/locale/%l_%t/%N"
     ),
     "LIBRARY_PATH": (
-        "/opt/intel/psxe_runtime_2019.3.199/linux/daal/lib/intel64_lin:"
-        "/opt/intel/psxe_runtime_2019.3.199/linux/compiler/lib/intel64_lin:"
-        "/opt/intel/psxe_runtime_2019.3.199/linux/mkl/lib/intel64_lin:"
-        "/opt/intel/psxe_runtime_2019.3.199/linux/tbb/lib/intel64/gcc4.7:"
-        "/opt/intel/psxe_runtime_2019.3.199/linux/ipp/lib/intel64:"
-        "/opt/intel/psxe_runtime_2019.3.199/linux/mpi/intel64/libfabric/lib:"
-        "/opt/intel/psxe_runtime_2019.3.199/linux/compiler/lib/intel64_lin"
+        f"{PSXE_BASE_PATH}/daal/lib/intel64_lin:"
+        f"{PSXE_BASE_PATH}/compiler/lib/intel64_lin:"
+        f"{PSXE_BASE_PATH}/mkl/lib/intel64_lin:"
+        f"{PSXE_BASE_PATH}/tbb/lib/intel64/gcc4.7:"
+        f"{PSXE_BASE_PATH}/ipp/lib/intel64:"
+        f"{PSXE_BASE_PATH}/mpi/intel64/libfabric/lib:"
+        f"{PSXE_BASE_PATH}/compiler/lib/intel64_lin"
     ),
-    "DAALROOT": "/opt/intel/psxe_runtime_2019.3.199/linux/daal",
-    "MIC_LD_LIBRARY_PATH": "/opt/intel/psxe_runtime_2019.3.199/linux/compiler/lib/intel64_lin_mic",
-    "MANPATH": "/opt/intel/psxe_runtime_2019.3.199/linux/mpi/man:",
+    "DAALROOT": f"{PSXE_BASE_PATH}/daal",
+    "MIC_LD_LIBRARY_PATH": f"{PSXE_BASE_PATH}/compiler/lib/intel64_lin_mic",
+    "MANPATH": f"{PSXE_BASE_PATH}/mpi/man:",
     "CPLUS_INCLUDE_PATH": "/app/json_parser/include",
-    "MKLROOT": "/opt/intel/psxe_runtime_2019.3.199/linux/mkl",
+    "MKLROOT": f"{PSXE_BASE_PATH}/mkl",
     "PATH": (
-        "/opt/intel/psxe_runtime_2019.3.199/linux/mpi/intel64/libfabric/bin:"
-        "/opt/intel/psxe_runtime_2019.3.199/linux/mpi/intel64/bin:"
-        "/opt/intel/psxe_runtime_2019.3.199/linux/bin:"
+        f"{PSXE_BASE_PATH}/mpi/intel64/libfabric/bin:"
+        f"{PSXE_BASE_PATH}/mpi/intel64/bin:"
+        f"{PSXE_BASE_PATH}/bin:"
         "/usr/local/sbin:"
         "/usr/local/bin:"
         "/usr/sbin:"
@@ -75,9 +79,9 @@ PSXE_ENVS = {
         "/sbin:"
         "/bin"
     ),
-    "TBBROOT": "/opt/intel/psxe_runtime_2019.3.199/linux/tbb",
-    "PKG_CONFIG_PATH": "/opt/intel/psxe_runtime_2019.3.199/linux/mkl/bin/pkgconfig",
-    "I_MPI_ROOT": "/opt/intel/psxe_runtime_2019.3.199/linux/mpi",
+    "TBBROOT": f"{PSXE_BASE_PATH}/tbb",
+    "PKG_CONFIG_PATH": f"{PSXE_BASE_PATH}/mkl/bin/pkgconfig",
+    "I_MPI_ROOT": f"{PSXE_BASE_PATH}/mpi",
 }
 
 
