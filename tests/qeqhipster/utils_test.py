@@ -100,7 +100,7 @@ class TestConvertingCircuitToSimplifiedQasm:
             (
                 circuits.Circuit([circuits.RX(np.pi)(1), circuits.RZ(0.5)(3)]),
                 "\n".join(
-                    ["4", "RX 3.14159265358979311600 1", "RZ 0.50000000000000000000 3"]
+                    ["4", "Rx 3.14159265358979311600 1", "Rz 0.50000000000000000000 3"]
                 ),
             ),
         ],

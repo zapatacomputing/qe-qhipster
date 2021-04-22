@@ -62,6 +62,13 @@ def make_circuit_qhipster_compatible(circuit: circuits.Circuit):
     )
 
 
+GATE_NAME_SPECIAL_CASES = {"RX": "Rx", "RY": "Ry", "RZ": "Rz"}
+
+
+def _qhipster_gate_name(gate: circuits.Gate):
+    return GATE_NAME_SPECIAL_CASES.get(gate.name, gate.name.upper())
+
+
 def _serialize_operation_to_qasm(operation: circuits.GateOperation):
     operation_param_string = " ".join(
         [
@@ -69,7 +76,7 @@ def _serialize_operation_to_qasm(operation: circuits.GateOperation):
             *map(str, operation.qubit_indices),
         ]
     )
-    return f"{operation.gate.name} {operation_param_string}"
+    return f"{_qhipster_gate_name(operation.gate)} {operation_param_string}"
 
 
 def convert_to_simplified_qasm(circuit: circuits.Circuit):
