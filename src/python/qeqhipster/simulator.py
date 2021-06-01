@@ -9,9 +9,7 @@ from zquantum.core.measurement import (
     sample_from_wavefunction,
     Measurements,
 )
-from zquantum.core.circuit import Circuit as OldCircuit
-from zquantum.core.wip.compatibility_tools import compatible_with_old_type
-from zquantum.core.wip.circuits import new_circuit_from_old_circuit
+from zquantum.core.circuits import Circuit
 from .utils import (
     save_symbolic_operator,
     make_circuit_qhipster_compatible,
@@ -96,18 +94,12 @@ class QHipsterSimulator(QuantumSimulator):
         super().__init__(n_samples=n_samples)
         self.nthreads = nthreads
 
-    @compatible_with_old_type(
-        old_type=OldCircuit, translate_old_to_wip=new_circuit_from_old_circuit
-    )
     def run_circuit_and_measure(self, circuit, n_samples=None, **kwargs):
         if n_samples is None:
             n_samples = self.n_samples
         wavefunction = self.get_wavefunction(circuit)
         return Measurements(sample_from_wavefunction(wavefunction, n_samples))
 
-    @compatible_with_old_type(
-        old_type=OldCircuit, translate_old_to_wip=new_circuit_from_old_circuit
-    )
     def get_exact_expectation_values(self, circuit, qubit_operator, **kwargs):
         self.number_of_circuits_run += 1
         self.number_of_jobs_run += 1
@@ -151,17 +143,12 @@ class QHipsterSimulator(QuantumSimulator):
             )
             expectation_values = load_expectation_values(expectation_values_json_path)
 
-        term_index = 0
-        for term in qubit_operator.terms:
+        for term_index, term in enumerate(qubit_operator.terms):
             expectation_values.values[term_index] = np.real(
                 qubit_operator.terms[term] * expectation_values.values[term_index]
             )
-            term_index += 1
         return expectation_values
 
-    @compatible_with_old_type(
-        old_type=OldCircuit, translate_old_to_wip=new_circuit_from_old_circuit
-    )
     def get_wavefunction(self, circuit):
         super().get_wavefunction(circuit)
 
