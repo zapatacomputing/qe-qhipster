@@ -1,7 +1,7 @@
 import numpy as np
 import sympy
 import pytest
-from zquantum.core.wip import circuits
+from zquantum.core import circuits
 from qeqhipster.utils import (
     make_circuit_qhipster_compatible,
     convert_to_simplified_qasm,

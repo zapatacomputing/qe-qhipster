@@ -1,13 +1,11 @@
 from openfermion import SymbolicOperator
 import numpy as np
 import json
-from zquantum.core.wip import circuits
+from zquantum.core import circuits
 
 
 def save_symbolic_operator(op: SymbolicOperator, filename: str) -> None:
-    dictionary = {}
-    dictionary["expression"] = convert_symbolic_op_to_string(op)
-
+    dictionary = {"expression": convert_symbolic_op_to_string(op)}
     with open(filename, "w") as f:
         f.write(json.dumps(dictionary, indent=2))
 
