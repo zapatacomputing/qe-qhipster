@@ -1,5 +1,7 @@
 # qe-qhipster
 
+[![codecov](https://codecov.io/gh/zapatacomputing/qe-qhipster/branch/master/graph/badge.svg?token=C1SFVLKHB9)](https://codecov.io/gh/zapatacomputing/qe-qhipster)
+
 ## What is it?
 
 
