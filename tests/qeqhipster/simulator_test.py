@@ -8,23 +8,14 @@ from qeqhipster.simulator import QHipsterSimulator
 from qeqhipster.utils import make_circuit_qhipster_compatible
 
 
-@pytest.fixture(
-    params=[
-        {},
-        {"n_samples": 1000},
-    ]
-)
-def backend(request):
-    return QHipsterSimulator(**request.param)
+@pytest.fixture
+def backend():
+    return QHipsterSimulator()
 
 
-@pytest.fixture(
-    params=[
-        {},
-    ]
-)
-def wf_simulator(request):
-    return QHipsterSimulator(**request.param)
+@pytest.fixture()
+def wf_simulator():
+    return QHipsterSimulator()
 
 
 class TestQHipster(QuantumSimulatorTests):
