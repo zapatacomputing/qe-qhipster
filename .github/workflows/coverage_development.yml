@@ -37,7 +37,7 @@ jobs:
       # Runs a set of commands using the runners shell
       - name: Run test coverage
         run: |
-          python3 -m pip install z-quantum-core/
+          pip install z-quantum-core/
           python3 -m pip install .
           python3 -m pip install pytest-cov
           python3 -m pytest --cov=qeqhipster tests/
