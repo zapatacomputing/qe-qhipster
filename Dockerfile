@@ -15,6 +15,7 @@ FROM python:3.7-buster
 # Use toolchain and built simulator binaries cached in previous version of this image.
 COPY --from=old-qe-qhipster /opt/intel/psxe_runtime_2019.3.199/linux /opt/intel/psxe_runtime_2019.3.199/linux
 COPY --from=old-qe-qhipster /app/zapata /app/zapata
+COPY --from=old-qe-qhipster /app/json_parser /app/json_parser
 
 RUN apt update
 RUN apt install -y \
