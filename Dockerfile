@@ -34,8 +34,11 @@ WORKDIR /app
 
 # TODO: rearrange the layers
 RUN git clone https://github.com/zapatacomputing/z-quantum-core
-
-
 RUN pip3 install z-quantum-core/
+
+COPY . .
+RUN pip3 install -e .[dev]
+
 COPY --from=old-qe-qhipster /app/zapata /app/zapata
+# RUN pytest tests
 
