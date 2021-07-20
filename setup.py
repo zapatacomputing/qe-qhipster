@@ -1,5 +1,4 @@
 import setuptools
-import os
 
 with open("README.md", "r") as f:
     long_description = f.read()
@@ -20,4 +19,9 @@ setuptools.setup(
         "Operating System :: OS Independent",
     ),
     install_requires=["z-quantum-core"],
+    extras_require={
+        "dev": [
+            "pytest"
+        ],
+    },
 )
