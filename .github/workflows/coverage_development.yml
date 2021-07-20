@@ -19,7 +19,7 @@ jobs:
   build:
     container:
       # image: zapatacomputing/qe-qhipster:latest
-      image: alexjudazapata/qe-qhipster:v1
+      image: alexjudazapata/qe-qhipster:v2
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
 
