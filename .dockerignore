@@ -1,0 +1,9 @@
+.git
+.gitignore
+.github
+
+# python
+.pytest_cache
+*.egg-info
+*.pyc
+__pycache__
