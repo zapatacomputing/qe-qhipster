@@ -21,7 +21,8 @@ setuptools.setup(
     install_requires=["z-quantum-core"],
     extras_require={
         "dev": [
-            "pytest"
+            "pytest",
+            "pytest-cov"
         ],
     },
 )
