@@ -10,20 +10,13 @@ FROM zapatacopmuting/qe-qhipster@sha256:558d25915f002e0cc0460cd0d65a010f3a45e862
 
 # ------ Main image ------
 
-FROM ubuntu:focal
+FROM python:3.7-buster
 
 # Use toolchain and built simulator binaries cached in previous version of this image.
 COPY --from=old-qe-qhipster /opt/intel/psxe_runtime_2019.3.199/linux /opt/intel/psxe_runtime_2019.3.199/linux
 COPY --from=old-qe-qhipster /app/zapata /app/zapata
 
 RUN apt update
-
-RUN apt-get install -y software-properties-common && \
-    add-apt-repository -y ppa:deadsnakes/ppa && \
-    apt-get install -y python3.7 && \
-    apt-get install -y python3-pip && \
-    apt-get install -y python3.7-dev
-
 RUN apt install -y \
     git \
     wget \
