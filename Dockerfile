@@ -36,11 +36,3 @@ COPY --from=zq-default /usr/local/lib/python3.7/dist-packages/ /usr/local/lib/py
 
 WORKDIR /app
 
-RUN git clone https://github.com/zapatacomputing/z-quantum-core
-RUN pip3 install z-quantum-core/
-
-COPY . .
-RUN pip3 install -e .[dev]
-
-RUN pytest tests
-
