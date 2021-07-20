@@ -1,6 +1,14 @@
-# define alias so we can copy deps from it
+# ------ Aliases ------
+
+# Used to prepopulate pip dependencies
 FROM zapatacomputing/z-quantum-default:latest as zq-default
 
+# Nowadays we don't have access to the full toolchain needed to build native qHipster
+# binaries. We can copy the built binaries from previous versions of this image, though.
+FROM zapatacopmuting/qe-qhipster@sha256:558d25915f002e0cc0460cd0d65a010f3a45e862dcae614fcc7e5c85d42136ea as old-qe-qhipster
+
+
+# ------ Main image ------
 
 FROM ubuntu:focal
 
@@ -24,8 +32,10 @@ COPY --from=zq-default /usr/local/lib/python3.7/dist-packages/ /usr/local/lib/py
 
 WORKDIR /app
 
+# TODO: rearrange the layers
 RUN git clone https://github.com/zapatacomputing/z-quantum-core
 
 
 RUN pip3 install z-quantum-core/
+COPY --from=old-qe-qhipster /app/zapata /app/zapata
 
