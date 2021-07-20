@@ -90,17 +90,15 @@ PSXE_ENVS = {
 class QHipsterSimulator(QuantumSimulator):
     supports_batching = False
 
-    def __init__(self, n_samples=None, nthreads=1):
-        super().__init__(n_samples=n_samples)
+    def __init__(self, nthreads=1):
+        super().__init__()
         self.nthreads = nthreads
 
-    def run_circuit_and_measure(self, circuit, n_samples=None, **kwargs):
-        if n_samples is None:
-            n_samples = self.n_samples
+    def run_circuit_and_measure(self, circuit, n_samples):
         wavefunction = self.get_wavefunction(circuit)
         return Measurements(sample_from_wavefunction(wavefunction, n_samples))
 
-    def get_exact_expectation_values(self, circuit, qubit_operator, **kwargs):
+    def get_exact_expectation_values(self, circuit, qubit_operator):
         self.number_of_circuits_run += 1
         self.number_of_jobs_run += 1
         circuit = make_circuit_qhipster_compatible(circuit)
