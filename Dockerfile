@@ -1,8 +1,5 @@
 # ------ Aliases ------
 
-# Used to prepopulate pip dependencies
-FROM zapatacomputing/z-quantum-default:latest as zq-default
-
 # Nowadays we don't have access to the full toolchain needed to build native qHipster
 # binaries. We can copy the built binaries from previous versions of this image, though.
 FROM zapatacopmuting/qe-qhipster@sha256:558d25915f002e0cc0460cd0d65a010f3a45e862dcae614fcc7e5c85d42136ea as old-qe-qhipster
@@ -10,7 +7,9 @@ FROM zapatacopmuting/qe-qhipster@sha256:558d25915f002e0cc0460cd0d65a010f3a45e862
 
 # ------ Main image ------
 
-FROM python:3.7-buster
+# Using z-quantum-default as the base because it contains preinstalled pip dependencies for
+# z-quantum-core and this way we may reuse them.
+FROM zapatacomputing/z-quantum-default:latest
 
 # Use toolchain and built simulator binaries cached in previous version of this image.
 COPY --from=old-qe-qhipster /opt/intel/psxe_runtime_2019.3.199/linux /opt/intel/psxe_runtime_2019.3.199/linux
@@ -22,11 +21,6 @@ RUN apt install -y \
     git \
     wget \
     curl
-
-# Use deps preinstalled in z-quantum-default.
-# NOTE: if this breaks in the future consider using pip2py's local index for sharing prefetched
-# dependencies (https://stackoverflow.com/a/12525448)
-COPY --from=zq-default /usr/local/lib/python3.7/dist-packages/ /usr/local/lib/python3.7/dist-packages/
 
 WORKDIR /app
 
