@@ -37,8 +37,7 @@ jobs:
       - name: Run test coverage
         run: |
           python3 -m pip install z-quantum-core/
-          python3 -m pip install .
-          python3 -m pip install pytest-cov
+          python3 -m pip install .[dev]
           python3 -m pytest --cov=qeqhipster tests/
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v1

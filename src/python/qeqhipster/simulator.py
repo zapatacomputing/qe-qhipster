@@ -90,17 +90,15 @@ PSXE_ENVS = {
 class QHipsterSimulator(QuantumSimulator):
     supports_batching = False
 
-    def __init__(self, n_samples=None, nthreads=1):
-        super().__init__(n_samples=n_samples)
+    def __init__(self, nthreads=1):
+        super().__init__()
         self.nthreads = nthreads
 
-    def run_circuit_and_measure(self, circuit, n_samples=None, **kwargs):
-        if n_samples is None:
-            n_samples = self.n_samples
+    def run_circuit_and_measure(self, circuit, n_samples):
         wavefunction = self.get_wavefunction(circuit)
         return Measurements(sample_from_wavefunction(wavefunction, n_samples))
 
-    def get_exact_expectation_values(self, circuit, qubit_operator, **kwargs):
+    def get_exact_expectation_values(self, circuit, qubit_operator):
         self.number_of_circuits_run += 1
         self.number_of_jobs_run += 1
         circuit = make_circuit_qhipster_compatible(circuit)
@@ -124,14 +122,15 @@ class QHipsterSimulator(QuantumSimulator):
             with open(circuit_txt_path, "w") as qasm_file:
                 qasm_file.write(convert_to_simplified_qasm(circuit))
 
-            subprocess.call(
+            subprocess.run(
                 [
                     "/app/json_parser/qubitop_to_paulistrings.o",
                     operator_json_path,
-                ]
+                ],
+                check=True,
             )
             # Run simulation
-            subprocess.call(
+            subprocess.run(
                 [
                     "/app/zapata/zapata_interpreter_no_mpi_get_exp_vals.out",
                     circuit_txt_path,
@@ -140,6 +139,7 @@ class QHipsterSimulator(QuantumSimulator):
                     expectation_values_json_path,
                 ],
                 env=PSXE_ENVS,
+                check=True,
             )
             expectation_values = load_expectation_values(expectation_values_json_path)
 
@@ -164,7 +164,7 @@ class QHipsterSimulator(QuantumSimulator):
                 qasm_file.write(convert_to_simplified_qasm(circuit))
 
             # Run simulation
-            subprocess.call(
+            subprocess.run(
                 [
                     "/app/zapata/zapata_interpreter_no_mpi_get_wf.out",
                     circuit_txt_path,
@@ -172,6 +172,7 @@ class QHipsterSimulator(QuantumSimulator):
                     wavefunction_json_path,
                 ],
                 env=PSXE_ENVS,
+                check=True,
             )
 
             wavefunction = load_wavefunction(wavefunction_json_path)
