@@ -3,6 +3,7 @@ import subprocess
 import tempfile
 
 from zquantum.core.interfaces.backend import QuantumSimulator, StateVector
+from zquantum.core.wavefunction import flip_wavefunction
 from zquantum.core.measurement import (
     load_wavefunction,
     load_expectation_values,
@@ -184,4 +185,4 @@ class QHipsterSimulator(QuantumSimulator):
 
             wavefunction = load_wavefunction(wavefunction_json_path)
 
-        return wavefunction
+        return flip_wavefunction(wavefunction)
