@@ -2,7 +2,7 @@ import os
 import subprocess
 import tempfile
 
-from zquantum.core.interfaces.backend import QuantumSimulator
+from zquantum.core.interfaces.backend import QuantumSimulator, StateVector
 from zquantum.core.measurement import (
     load_wavefunction,
     load_expectation_values,
@@ -149,8 +149,15 @@ class QHipsterSimulator(QuantumSimulator):
             )
         return expectation_values
 
-    def get_wavefunction(self, circuit):
-        super().get_wavefunction(circuit)
+    def _get_wavefunction_from_native_circuit(
+        self, circuit: Circuit, initial_state: StateVector
+    ) -> StateVector:
+        if not np.array_equal(initial_state, [1] + [0] * (len(initial_state) - 1)):
+            raise ValueError(
+                "QHipsterSimulator does not support starting simulations from state "
+                "other than |0>. In particular, it currently does not support "
+                "non-native circuit components."
+            )
 
         with tempfile.TemporaryDirectory() as dir_path:
             circuit_txt_path = os.path.join(dir_path, "temp_qhipster_circuit.txt")

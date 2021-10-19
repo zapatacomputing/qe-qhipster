@@ -19,7 +19,9 @@ def wf_simulator():
 
 
 class TestQHipster(QuantumSimulatorTests):
-    pass
+    @pytest.mark.xfail
+    def test_get_wavefunction_uses_provided_initial_state(self, wf_simulator):
+        super().test_get_wavefunction_uses_provided_initial_state(wf_simulator)
 
 
 class TestQHipsterGates(QuantumSimulatorGatesTest):
