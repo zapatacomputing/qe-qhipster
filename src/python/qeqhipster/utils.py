@@ -1,6 +1,7 @@
-from openfermion import SymbolicOperator
-import numpy as np
 import json
+
+import numpy as np
+from openfermion import SymbolicOperator
 from zquantum.core import circuits
 
 
