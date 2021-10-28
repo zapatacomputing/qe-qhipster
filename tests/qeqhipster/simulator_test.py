@@ -1,11 +1,10 @@
 import pytest
-from zquantum.core.interfaces.backend_test import (
-    QuantumSimulatorTests,
-    QuantumSimulatorGatesTest,
-)
-
 from qeqhipster.simulator import QHipsterSimulator
 from qeqhipster.utils import make_circuit_qhipster_compatible
+from zquantum.core.interfaces.backend_test import (
+    QuantumSimulatorGatesTest,
+    QuantumSimulatorTests,
+)
 
 
 @pytest.fixture

@@ -1,6 +1,7 @@
-from openfermion import SymbolicOperator
-import numpy as np
 import json
+
+import numpy as np
+from openfermion import SymbolicOperator
 from zquantum.core import circuits
 
 
@@ -78,13 +79,15 @@ def _serialize_operation_to_qasm(operation: circuits.GateOperation):
 
 
 def convert_to_simplified_qasm(circuit: circuits.Circuit):
-    return (
+    if circuit.operations:
+        max_index = (
+            max(index for op in circuit.operations for index in op.qubit_indices) + 1
+        )
         "\n".join(
             [
-                f"{max(index for op in circuit.operations for index in op.qubit_indices)+1}",
+                f"{max_index}",
                 *map(_serialize_operation_to_qasm, circuit.operations),
             ]
         )
-        if circuit.operations
-        else "0\n"
-    )
+    else:
+        return "0\n"

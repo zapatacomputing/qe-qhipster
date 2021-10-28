@@ -2,26 +2,26 @@ import os
 import subprocess
 import tempfile
 
-from zquantum.core.interfaces.backend import QuantumSimulator, StateVector
-from zquantum.core.wavefunction import flip_wavefunction
-from zquantum.core.measurement import (
-    load_wavefunction,
-    load_expectation_values,
-    sample_from_wavefunction,
-    Measurements,
-)
-from zquantum.core.circuits import Circuit
-from .utils import (
-    save_symbolic_operator,
-    make_circuit_qhipster_compatible,
-    convert_to_simplified_qasm,
-)
-from openfermion.ops import SymbolicOperator
 import numpy as np
+from openfermion.ops import SymbolicOperator
+from zquantum.core.circuits import Circuit
+from zquantum.core.interfaces.backend import QuantumSimulator, StateVector
+from zquantum.core.measurement import (
+    Measurements,
+    load_expectation_values,
+    load_wavefunction,
+    sample_from_wavefunction,
+)
+from zquantum.core.wavefunction import flip_wavefunction
 
+from .utils import (
+    convert_to_simplified_qasm,
+    make_circuit_qhipster_compatible,
+    save_symbolic_operator,
+)
 
-# NOTE: The environment variables below are necessary for running qhipster with the intel
-# psxe runtime installation. They were obtained through sourcing the script
+# NOTE: The environment variables below are necessary for running qhipster with the
+# intel psxe runtime installation. They were obtained through sourcing the script
 # /app/usr/local/bin/compilers_and_libraries.sh which can be found in the
 # zapatacomputing/qe-qhipster docker image.
 
@@ -114,8 +114,8 @@ class QHipsterSimulator(QuantumSimulator):
 
             if not isinstance(qubit_operator, SymbolicOperator):
                 raise TypeError(
-                    f"Unsupported type: {type(qubit_operator)} QHipster works only with "
-                    "openfermion.SymbolicOperator"
+                    f"Unsupported type: {type(qubit_operator)} QHipster "
+                    "works only with openfermion.SymbolicOperator"
                 )
 
             save_symbolic_operator(qubit_operator, operator_json_path)
