@@ -1,11 +1,11 @@
 import numpy as np
-import sympy
 import pytest
-from zquantum.core import circuits
+import sympy
 from qeqhipster.utils import (
-    make_circuit_qhipster_compatible,
     convert_to_simplified_qasm,
+    make_circuit_qhipster_compatible,
 )
+from zquantum.core import circuits
 
 
 class TestMakingCircuitCompatibleWithQHipster:
