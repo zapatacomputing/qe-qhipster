@@ -1,12 +1,12 @@
 # qe-qhipster
 
-[![codecov](https://codecov.io/gh/zapatacomputing/qe-qhipster/branch/master/graph/badge.svg?token=C1SFVLKHB9)](https://codecov.io/gh/zapatacomputing/qe-qhipster)
+[![codecov](https://codecov.io/gh/zapatacomputing/qe-qhipster/branch/main/graph/badge.svg?token=C1SFVLKHB9)](https://codecov.io/gh/zapatacomputing/qe-qhipster)
 
 ## What is it?
 
 
 `qe-qhipster` is an [Orquestra](https://www.zapatacomputing.com/orquestra/) module, which allows to users to integrate workflow components with the Intel [qHiPSTER](https://github.com/iqusoft/intel-qs) simulator.
-It complies to the backend interface defined in the [`z-quantum-core`](https://github.com/zapatacomputing/z-quantum-core/blob/master/src/python/orquestra/core/interfaces/backend.py).
+It complies to the backend interface defined in the [`z-quantum-core`](https://github.com/zapatacomputing/z-quantum-core/blob/main/src/python/orquestra/core/interfaces/backend.py).
 
 ## Usage
 
@@ -19,7 +19,7 @@ resources:
   type: git
   parameters:
     url: "git@github.com:zapatacomputing/qe-qhipster.git"
-    branch: "master"
+    branch: "main"
 ```
 
 and then import in a specific step:
