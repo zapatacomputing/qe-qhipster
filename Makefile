@@ -1,8 +1,8 @@
 include subtrees/z_quantum_actions/Makefile
 
 github_actions:
-	sudo apt-get update
-	sudo apt-get install -y python3.7-venv
+	apt-get update
+	apt-get install -y python3.7-venv
 
 	python3 -m venv ${VENV} && \
 		${VENV}/bin/python3 -m pip install --upgrade pip && \
