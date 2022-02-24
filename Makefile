@@ -4,6 +4,7 @@ github_actions:
 	apt-get update
 	apt-get install -y python3.7-venv
 
+	@echo "LOOOK HERE FOR NUMPY VERISON"
 	python -c "import numpy; print(numpy.version.version)"
 
 	python3 -m venv ${VENV} && \
