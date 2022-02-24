@@ -56,6 +56,8 @@ flake8-default: clean
 
 mypy-default: clean
 	@echo scanning files with mypy: Please be patient....
+	PACKAGE_VERSION=$(strip $(shell apt-cache policy $(numpy) | grep Installed: | cut -d: -f2))
+	@echo "VERSION OF NUMPY RUNNING: \033[92m$(PACKAGE_VERSION)\033[0m"
 	$(PYTHON) -m mypy src tests
 
 black-default: clean
