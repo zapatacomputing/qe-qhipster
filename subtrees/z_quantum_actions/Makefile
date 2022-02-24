@@ -14,6 +14,7 @@ export VENV := venv
 PYTHON := $(shell PATH="venv/bin:${PATH}" python3 -c 'import sys; print(sys.executable)')
 REPO := $(shell git config --get remote.origin.url)
 PYTHON_MOD := $(shell find src -maxdepth 3 -mindepth 3 -type d | sed '/.*cache/d; s/src\/python\/// ; s/\//./')
+NUMPY_VERSION=$(strip $(shell apt-cache policy $(numpy) | grep Installed: | cut -d: -f2))
 
 ifeq ($(PYTHON),)
 $(error "PYTHON=$(PYTHON)")
@@ -56,8 +57,7 @@ flake8-default: clean
 
 mypy-default: clean
 	@echo scanning files with mypy: Please be patient....
-	PACKAGE_VERSION=$(strip $(shell apt-cache policy $(numpy) | grep Installed: | cut -d: -f2))
-	@echo "VERSION OF NUMPY RUNNING: \033[92m$(PACKAGE_VERSION)\033[0m"
+	@echo "VERSION OF NUMPY RUNNING: \033[92m$(NUMPY_VERSION)\033[0m"
 	$(PYTHON) -m mypy src tests
 
 black-default: clean
