@@ -3,7 +3,7 @@ import subprocess
 import tempfile
 
 import numpy as np
-from openfermion.ops import SymbolicOperator
+from zquantum.core.openfermion.ops import SymbolicOperator
 from zquantum.core.circuits import Circuit
 from zquantum.core.interfaces.backend import QuantumSimulator, StateVector
 from zquantum.core.measurement import (
