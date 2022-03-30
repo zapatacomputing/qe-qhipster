@@ -1,8 +1,8 @@
 import json
 
 import numpy as np
-from zquantum.core.openfermion import SymbolicOperator
 from zquantum.core import circuits
+from zquantum.core.openfermion import SymbolicOperator
 
 
 def save_symbolic_operator(op: SymbolicOperator, filename: str) -> None:

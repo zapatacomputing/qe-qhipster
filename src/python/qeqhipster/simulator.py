@@ -3,7 +3,6 @@ import subprocess
 import tempfile
 
 import numpy as np
-from zquantum.core.openfermion.ops import SymbolicOperator
 from zquantum.core.circuits import Circuit
 from zquantum.core.interfaces.backend import QuantumSimulator, StateVector
 from zquantum.core.measurement import (
@@ -12,6 +11,7 @@ from zquantum.core.measurement import (
     load_wavefunction,
     sample_from_wavefunction,
 )
+from zquantum.core.openfermion.ops import SymbolicOperator
 from zquantum.core.wavefunction import flip_wavefunction
 
 from .utils import (
